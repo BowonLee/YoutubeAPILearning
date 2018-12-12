@@ -110,14 +110,10 @@ class ListHolderSearchItem : RecyclerView.ViewHolder, View.OnClickListener{
             result?.forEach { Log.e("asd","${it.contentDetails.duration} == ${ parseDuration(it.contentDetails.duration) }") }
 
             viewhloderBinder.textviewDuration?.setText(result?.get(0)?.contentDetails?.duration?.let { parseDuration(it) })
-            viewhloderBinder.textviewViewcountViewholder?.setText("${result?.get(0)?.statistics?.viewCount}")
+            viewhloderBinder.textviewViewcountViewholder?.setText("${result?.get(0)?.statistics?.viewCount?.let { parseViewcount(it) }}회")
 
         }
 
     }
 }
 
-
-// 미리보기 이미지, 제목, 작성자, 기타 정보
-// TODO 일단 받아오고 작성
-//data class YoutubeSearchListItems()

@@ -59,26 +59,37 @@ fun parseDuration(timeData:String):String{
  *  A>B 1
  *
  * 1000 단위 이전까지는 숫자 그대로
- * 1000~10000 는 x천 단위
+ * @Todo 1000~10000 는 x천 단위 <- 1~10000 사이에서만
  * 10000(만)~100000(십만) 까지는 x.y만 과 같은 형태
  * 100000(십만)~10000000(천만) 까지는
  *
- * 천 (만,억,경,조)
- *
  * 10000(만)의 단위기준으로 명칭이 달라짐
- *
+ * number + 단위
  * */
-private const val HUNDRED_THOUSAND = 100000L
-
-
+private const val UNIT_100K = 100000L
+private const val UNIT_10K = 10000L
 
 fun parseViewcount(viewCount:BigInteger):String{
-    val UNIT_BY_TEN_THOUSAND = arrayOf("","만","억","조")
+    var viewCount = viewCount
+    val unitsBy10K = arrayOf("","만","억","조","경")
 
     var result :String = ""
+    unitsBy10K.forEachIndexed { index, numberUnit ->
+        if(viewCount.compareTo(BigInteger.valueOf(UNIT_100K) ) == -1){
+            if(viewCount.compareTo(BigInteger.valueOf(UNIT_10K)) ==- -1 ){
+                /**viewcount == 10K~100K*/
+                result = String.format("${(viewCount.toDouble()/10000).toString().take(3)} ${unitsBy10K[index+1]} ")
+                return result
+            }else {
+                /**viewcount == 1 ~ 10K */
+                result = String.format("${viewCount} $numberUnit" )
+                return result
+            }
+        }
 
+        viewCount=viewCount.divide(BigInteger.valueOf(UNIT_10K))
 
-
+    }
 
 
 

@@ -61,7 +61,7 @@
                 android:layout_height="30dp"
                 android:text="TEMP TITLE"
                 android:textColor="#000000"
-                android:textSize="11dp" />
+                android:textSize="11sp" />
 
             <TextView
                 android:id="@+id/textviewUploaderViewholder"
@@ -69,7 +69,7 @@
                 android:layout_height="15dp"
                 android:text="TEMP UPLOADER"
                 android:textColor="#000000"
-                android:textSize="8dp" />
+                android:textSize="8sp" />
 
 
             <RelativeLayout
@@ -85,16 +85,16 @@
                     android:layout_alignParentLeft="true"
                     android:text="TEMP INFORMATION"
                     android:textColor="#000000"
-                    android:textSize="8dp" />
+                    android:textSize="8sp" />
 
                 <TextView
                     android:id="@+id/textviewViewcountViewholder"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_alignParentRight="true"
-                    android:text="10k"
-                    android:textColor="#000000"
-                    android:textSize="13dp" />
+                    android:text="0회"
+                    android:textColor="#444444"
+                    android:textSize="9sp" />
 
             </RelativeLayout>
 
