@@ -3,10 +3,14 @@
     <string name="action_settings">Settings</string>
 
     <!-- YOUTUBE API KEYS -->
-    <string name ="YOUTUBEAPIKEY1">AIzaSyBPhflyu2xTRjOuDyDdvqlJcPQVwCIjkuw</string>
-    <string name ="YOUTUBEAPIKEY2">AIzaSyCfJarcxHW_tpxo3GJ-42NZ73QRUo1rJ18</string>
-    <string name ="YOUTUBEAPIKEY3">AIzaSyCsgNFB-bIA6xMQMo7An69Ejqbzy8BmpOU</string>
-    <string name ="YOUTUBEAPIKEY4">AIzaSyCDRUNUnoths7IbWrPJ1wifaDirJ54RhVs</string>
-    <string name ="YOUTUBEAPIKEY5">AIzaSyDl7CJKXGbcZ0xRXOAl42Rk2yDW-SL3D0U</string>
+    <string-array name="ARRAY_OF_YOUTUBEKEY">
+        <item>AIzaSyBPhflyu2xTRjOuDyDdvqlJcPQVwCIjkuw</item>
+        <item>AIzaSyCfJarcxHW_tpxo3GJ-42NZ73QRUo1rJ18</item>
+        <item>AIzaSyCsgNFB-bIA6xMQMo7An69Ejqbzy8BmpOU</item>
+        <item>AIzaSyCDRUNUnoths7IbWrPJ1wifaDirJ54RhVs</item>
+        <item>AIzaSyDl7CJKXGbcZ0xRXOAl42Rk2yDW-SL3D0U</item>
+    </string-array>
+
+    <string name="tempString">아이유</string>
 
 </resources>
