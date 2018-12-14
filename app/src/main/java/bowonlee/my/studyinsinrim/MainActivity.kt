@@ -22,39 +22,34 @@ class MainActivity : AppCompatActivity() {
     /**
     * youtube의 검색과 사용을 위한 예제
     * */
-    lateinit var mainBinding:ActivityMainBinding
+    private lateinit var mainBinding:ActivityMainBinding
+    private lateinit var search:YouTube.Search.List
+    private lateinit var mAdapterListView : AdapterRecycler
+    private var nextPageToken : String? = null
+    private lateinit var searchText:String
+    private lateinit var mSearchItemsList : MutableList<SearchResult>
 
-    lateinit var search:YouTube.Search.List
-    lateinit var videos:YouTube.Videos.List
-
-    lateinit var adapterListView : AdapterRecycler
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         mainBinding= DataBindingUtil.setContentView(this,R.layout.activity_main)
         setForSearch()
-        setVideos()
         setRecyclerView()
         setSearchBtn()
 
     }
-    fun setRecyclerView(){
-        adapterListView = AdapterRecycler()
-        mainBinding.recyclerViewInMain.layoutManager = LinearLayoutManager(this)
-        mainBinding.recyclerViewInMain.adapter = adapterListView
-    }
 
     fun setSearchBtn(){
         mainBinding.buttonSearchMain.setOnClickListener {
-            YoutubeSearchTask().execute(SearchPair(search, mainBinding.searchBarInMain.text.toString()))
+            searchText = mainBinding.searchBarInMain.text.toString()
+            YoutubeSearchTask().execute(SearchPair(search, searchText))
             /**
             * 인자 : Youtube.Search.List객체 , 검색어
             * 반환 : SearchResponse
             *
             * 동작 : List에 해당 데이터를 업데이트
             * */
-
         }
     }
 
@@ -62,47 +57,52 @@ class MainActivity : AppCompatActivity() {
     /*
     * 검색을 위한 셋팅
     * */
+    fun setRecyclerView(){
+        mAdapterListView = AdapterRecycler()
+        mainBinding.recyclerViewInMain.layoutManager = LinearLayoutManager(this)
+        mainBinding.recyclerViewInMain.adapter = mAdapterListView
+        mAdapterListView.setOnScrollListener(object : AdapterRecycler.OnScrollListener {
+            override fun onScrollLast() {
+                //TODO 이전 페이지의 페이지 토큰을 이용하여 다음 페이지를 요청한다.
+                nextPageToken?.let {
+                    search.setPageToken(it)
+                    YoutubeSearchTask().execute(SearchPair(search, searchText))
+                }
+            }
+        })
+        mSearchItemsList = mutableListOf()
+
+    }
     fun setForSearch(){
         // 여기서 구체적으로 어떤 정보를 가져오는지 문자 열 형태로 정의하는 듯 하다.
         search = getYoutube().search().list("id,snippet")
         search.setKey(getYoutubeDataAPIKey(this))
         search.setType("video")
-        search.setFields("items(id,snippet)")
+        search.setFields("items(id,snippet),nextPageToken,pageInfo")
         search.setMaxResults(MAX_RESULT)
-
-    }
-    fun setVideos(){
-        videos = getYoutube().videos().list("contentDetails,statistics")
-        videos.setKey(getYoutubeDataAPIKey(this))
     }
 
-
-    inner class YoutubeSearchTask : AsyncTask<SearchPair<YouTube.Search.List>, Unit, List<SearchResult>>() {
-        lateinit var mSearchResultList : List<SearchResult>
-        lateinit var searchResponse : SearchListResponse
-        lateinit var search : YouTube.Search.List
-        override fun doInBackground(vararg searchPair: SearchPair<YouTube.Search.List>): List<SearchResult> {
-
+    inner class YoutubeSearchTask : AsyncTask<SearchPair<YouTube.Search.List>, Unit, SearchListResponse>() {
+        private var tSearchResultList : List<SearchResult>? = null
+        private lateinit var tSearchResponse : SearchListResponse
+        private lateinit var tSearch : YouTube.Search.List
+        override fun doInBackground(vararg searchPair: SearchPair<YouTube.Search.List>): SearchListResponse {
             search = searchPair.get(0).type.setQ(searchPair.get(0).query)
-            searchResponse = search.execute()
-
-            mSearchResultList = searchResponse.items
-            Log.i("PAGE TOKEN","pageInfo ${searchResponse.kind}")
-
-            return mSearchResultList
+            tSearchResponse = search.execute()
+            return tSearchResponse
         }
 
-        override fun onPostExecute(result: List<SearchResult>?) {
+        override fun onPostExecute(result: SearchListResponse?) {
             super.onPostExecute(result)
 
-            result?.forEach {
-                val thumnail = it.snippet.thumbnails.get("default")
-                Log.d("SEARCH ITEMS"," ID : ${it.id.videoId} TITLE : ${it.snippet.title}  URL" +
-                        " : ${thumnail} ")
+            tSearchResultList = result?.items
+            nextPageToken = result!!.nextPageToken
+            tSearchResultList?.let {
+                mSearchItemsList.addAll(it)
+                mAdapterListView.setSearchResult(mSearchItemsList)
             }
 
-            result?.let { adapterListView.setSearchResult(it)
-                Log.d("Is It run?","Excuted")}
+
             mainBinding.recyclerViewInMain.invalidate()
 
         }

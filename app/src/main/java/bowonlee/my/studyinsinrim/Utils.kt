@@ -1,7 +1,9 @@
 package bowonlee.my.studyinsinrim
 
 
+import android.util.Log
 import java.math.BigInteger
+import kotlin.reflect.KClass
 
 
 /**
@@ -15,6 +17,7 @@ import java.math.BigInteger
 private const val PARSE_UNIT_HOUR = 'H'
 private const val PARSE_UNIT_MINUTE = 'M'
 private const val PARSE_UNIT_SECOND = 'S'
+
 
 fun parseDuration(timeData:String):String{
 
@@ -59,10 +62,9 @@ fun parseDuration(timeData:String):String{
  *  A>B 1
  *
  * 1000 단위 이전까지는 숫자 그대로
- * @Todo 1000~10000 는 x천 단위 <- 1~10000 사이에서만
+ * @Todo 1k~10k 는 x천 단위 <- 10k(Units)이전에서만
  * 10000(만)~100000(십만) 까지는 x.y만 과 같은 형태
  * 100000(십만)~10000000(천만) 까지는
- *
  * 10000(만)의 단위기준으로 명칭이 달라짐
  * number + 단위
  * */
@@ -86,9 +88,7 @@ fun parseViewcount(viewCount:BigInteger):String{
                 return result
             }
         }
-
         viewCount=viewCount.divide(BigInteger.valueOf(UNIT_10K))
-
     }
 
 

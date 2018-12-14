@@ -21,12 +21,25 @@ import com.google.api.services.youtube.model.VideoListResponse
 
 class AdapterRecycler : RecyclerView.Adapter<ListHolderSearchItem>() {
 
+    interface OnScrollListener{
+        fun onScrollLast()
+    }
 
     private var searchResultList : List<SearchResult>? = null
+    private var onScrollListener : OnScrollListener? = null
 
 
+    fun setOnScrollListener(onScrollListener: OnScrollListener){
+                this.onScrollListener = onScrollListener
+    }
     override fun onBindViewHolder(holder: ListHolderSearchItem, position: Int) {
         searchResultList?.get(position)?.let { holder.setItem(it) }
+
+        searchResultList?.size.let {
+            if((it)==position+1){onScrollListener?.onScrollLast()}
+            Log.d("SCROLLING LISTENER","position : ${position} listSize : ${it}")
+         }
+
     }
     override fun getItemCount(): Int {
         return searchResultList?.size ?: 0
@@ -40,6 +53,7 @@ class AdapterRecycler : RecyclerView.Adapter<ListHolderSearchItem>() {
         this.searchResultList = searchResultList
         notifyDataSetChanged()
     }
+
 
 
 }
@@ -62,9 +76,8 @@ class ListHolderSearchItem : RecyclerView.ViewHolder, View.OnClickListener{
     }
 
     fun setItem(result : SearchResult){
-        Log.d("IN HOLDER","${result.id}")
+//        Log.d("IN HOLDER","${result.id}")
         videoId = result.id.videoId
-
         VideoDetailsTask().execute(SearchPair(videoDetail,videoId))
         /**
          * 인자 : Youtube.Video.List객체 , VideoId
@@ -107,12 +120,12 @@ class ListHolderSearchItem : RecyclerView.ViewHolder, View.OnClickListener{
         override fun onPostExecute(result: MutableList<Video>?) {
             super.onPostExecute(result)
 
-            result?.forEach { Log.e("asd","${it.contentDetails.duration} == ${ parseDuration(it.contentDetails.duration) }") }
+//            result?.forEach { Log.e("asd","${it.contentDetails.duration} == ${ parseDuration(it.contentDetails.duration) }") }
 
             viewhloderBinder.textviewDuration?.setText(result?.get(0)?.contentDetails?.duration?.let { parseDuration(it) })
             viewhloderBinder.textviewViewcountViewholder?.setText("${result?.get(0)?.statistics?.viewCount?.let { parseViewcount(it) }}회")
-
         }
+
 
     }
 }
