@@ -11,6 +11,23 @@
         <item>AIzaSyDl7CJKXGbcZ0xRXOAl42Rk2yDW-SL3D0U</item>
     </string-array>
 
+
+    <string-array name="FILLTER_ORDER">
+        <item>관련성</item>
+        <item>날자</item>
+        <item>조회수</item>
+        <item>평점</item>
+    </string-array>
+
+
+    <string-array name="FILLTER_TYPE">
+        <item>전체</item>
+        <item>동영상</item>
+        <item>채널</item>
+        <item>재생목록</item>
+    </string-array>
     <string name="tempString">아이유</string>
+
+
 
 </resources>

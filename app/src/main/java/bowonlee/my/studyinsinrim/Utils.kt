@@ -1,6 +1,8 @@
 package bowonlee.my.studyinsinrim
 
 
+import android.content.Context
+import android.net.ConnectivityManager
 import android.util.Log
 import java.math.BigInteger
 import kotlin.reflect.KClass
@@ -101,8 +103,18 @@ fun parseViewcount(viewCount:BigInteger):String{
 
 
 
+/** Context를 통해 와이피아 상테를 체크하여, Boolean 을 리턴 */
 
+fun isConnectedWifi(context : Context) : Boolean{
+    var result : Boolean  = false
+    val contentActivityManager : ConnectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+    val networkInfo = contentActivityManager.activeNetworkInfo
 
+    if(networkInfo.type == ConnectivityManager.TYPE_WIFI){
+        result = true
+    }
+    return result
+}
 
 
 

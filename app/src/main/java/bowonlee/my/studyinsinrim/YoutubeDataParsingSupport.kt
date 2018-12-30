@@ -32,3 +32,8 @@ fun getYoutube(): YouTube{
     }).setApplicationName("youtube-cmdline-search-sample").build()
 
 }
+fun getVideo(context : Context,part : String) :YouTube.Videos.List{
+    var result :YouTube.Videos.List = getYoutube().videos().list(part)
+    result.setKey(getYoutubeDataAPIKey(context))
+    return result
+}

@@ -18,6 +18,11 @@ import com.google.api.services.youtube.model.Video
 import com.google.api.services.youtube.model.VideoListResponse
 
 
+/**
+ * 검색 결과를 리스트 형태로 불러주는 어뎁터
+ * 사용1 : 검색어를 통한 검색
+ * 사용2 : 관련 리스트를 검색
+ * */
 
 class AdapterRecycler : RecyclerView.Adapter<ListHolderSearchItem>() {
 
@@ -55,7 +60,6 @@ class AdapterRecycler : RecyclerView.Adapter<ListHolderSearchItem>() {
     }
 
 
-
 }
 
 
@@ -64,14 +68,14 @@ class ListHolderSearchItem : RecyclerView.ViewHolder, View.OnClickListener{
     private var parentContext : Context
     private var videoDetail : YouTube.Videos.List
     private lateinit var videoId:String
+    private var mVideo:Video? = null
 
 
 
     constructor(itemView:ItemRecyclerviewYoutubeBinding) : super(itemView.root) {
         this.viewhloderBinder = itemView
         this.parentContext = itemView.root.context
-        this.videoDetail = getYoutube().videos().list("contentDetails,statistics")
-        this.videoDetail.setKey(getYoutubeDataAPIKey(this.parentContext))
+        this.videoDetail = getVideo(this.parentContext,"contentDetails,statistics")
         itemView.root.setOnClickListener(this)
     }
 
@@ -90,6 +94,7 @@ class ListHolderSearchItem : RecyclerView.ViewHolder, View.OnClickListener{
         viewhloderBinder.textviewUploaderViewholder.setText(result.snippet.channelTitle)
         viewhloderBinder.textviewInfoViewholder.setText(result.snippet.publishedAt?.toString())
 
+
     }
 
 
@@ -99,8 +104,9 @@ class ListHolderSearchItem : RecyclerView.ViewHolder, View.OnClickListener{
 
 
     private fun startPlayer(videoId :String){
-        val intent = Intent(parentContext,MyYoutubeActivity::class.java)
+        val intent = Intent(parentContext,ActivityYoutubePlayer::class.java)
         intent.putExtra("youtubeKey",videoId)
+
         parentContext.startActivity(intent)
     }
 
@@ -119,11 +125,10 @@ class ListHolderSearchItem : RecyclerView.ViewHolder, View.OnClickListener{
 
         override fun onPostExecute(result: MutableList<Video>?) {
             super.onPostExecute(result)
-
 //            result?.forEach { Log.e("asd","${it.contentDetails.duration} == ${ parseDuration(it.contentDetails.duration) }") }
-
             viewhloderBinder.textviewDuration?.setText(result?.get(0)?.contentDetails?.duration?.let { parseDuration(it) })
             viewhloderBinder.textviewViewcountViewholder?.setText("${result?.get(0)?.statistics?.viewCount?.let { parseViewcount(it) }}회")
+
         }
 
 

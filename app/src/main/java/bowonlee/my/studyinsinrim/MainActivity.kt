@@ -4,9 +4,10 @@ package bowonlee.my.studyinsinrim
 import android.databinding.DataBindingUtil
 import android.os.AsyncTask
 import android.os.Bundle
+import android.support.v4.app.DialogFragment
+import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
-import android.util.Log
 import bowonlee.my.studyinsinrim.databinding.ActivityMainBinding
 
 import com.google.api.services.youtube.YouTube
@@ -37,7 +38,15 @@ class MainActivity : AppCompatActivity() {
         setForSearch()
         setRecyclerView()
         setSearchBtn()
+        setFillterBtn()
+    }
+    fun setFillterBtn(){
+        mainBinding.btnFillter.setOnClickListener {
+            var dialogBuilder = DialogFillterForOrder.newInstance("asd")
+            dialogBuilder.show(fragmentManager,"s")
 
+
+        }
     }
 
     fun setSearchBtn(){
@@ -50,6 +59,7 @@ class MainActivity : AppCompatActivity() {
             *
             * 동작 : List에 해당 데이터를 업데이트
             * */
+
         }
     }
 
@@ -63,7 +73,7 @@ class MainActivity : AppCompatActivity() {
         mainBinding.recyclerViewInMain.adapter = mAdapterListView
         mAdapterListView.setOnScrollListener(object : AdapterRecycler.OnScrollListener {
             override fun onScrollLast() {
-                //TODO 이전 페이지의 페이지 토큰을 이용하여 다음 페이지를 요청한다.
+                /***이전 페이지의 페이지 토큰을 이용하여 다음 페이지를 요청한다.*/
                 nextPageToken?.let {
                     search.setPageToken(it)
                     YoutubeSearchTask().execute(SearchPair(search, searchText))
@@ -73,12 +83,14 @@ class MainActivity : AppCompatActivity() {
         mSearchItemsList = mutableListOf()
 
     }
+
     fun setForSearch(){
         // 여기서 구체적으로 어떤 정보를 가져오는지 문자 열 형태로 정의하는 듯 하다.
         search = getYoutube().search().list("id,snippet")
         search.setKey(getYoutubeDataAPIKey(this))
         search.setType("video")
         search.setFields("items(id,snippet),nextPageToken,pageInfo")
+        search.setOrder("viewCount")
         search.setMaxResults(MAX_RESULT)
     }
 
